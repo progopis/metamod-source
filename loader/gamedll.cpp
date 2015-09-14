@@ -62,6 +62,7 @@ static bool g_is_source2 = false;
 #endif
 #elif defined __APPLE__
 #define SERVER_NAME			"server.dylib"
+#define SOURCE2_LIB_REFIX		"lib"
 #if defined __amd64__
 #define PLATFORM_NAME		"osx64"
 #else
@@ -159,12 +160,17 @@ mm_DetectGameInformation()
 
 		char *pRelPath = is_source2 ? "../../" : "";
 		char *pOSDir = is_source2 ? PLATFORM_NAME "/" : "";
+#if defined __APPLE__
+		const char *prefix = is_source2 ? SOURCE2_LIB_REFIX : "";
+#else
+		const char *prefix = "";
+#endif
 		if (stricmp(key, "GameBin") == 0)
-			mm_PathFormat(temp_path, sizeof(temp_path), "%s/%s%s/%s" SERVER_NAME, lptr, pRelPath, ptr, pOSDir);
+			mm_PathFormat(temp_path, sizeof(temp_path), "%s/%s%s/%s%s" SERVER_NAME, lptr, pRelPath, ptr, pOSDir, prefix);
 		else if (!ptr[0])
-			mm_PathFormat(temp_path, sizeof(temp_path), "%s/%sbin/%s" SERVER_NAME, lptr, pRelPath, pOSDir);
+			mm_PathFormat(temp_path, sizeof(temp_path), "%s/%sbin/%s%s" SERVER_NAME, lptr, pRelPath, pOSDir, prefix);
 		else
-			mm_PathFormat(temp_path, sizeof(temp_path), "%s/%s%s/bin/%s" SERVER_NAME, lptr, pRelPath, ptr, pOSDir);
+			mm_PathFormat(temp_path, sizeof(temp_path), "%s/%s%s/bin/%s%s" SERVER_NAME, lptr, pRelPath, ptr, pOSDir, prefix);
 
 		if (mm_PathCmp(mm_path, temp_path))
 			continue;
